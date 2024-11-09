@@ -5,4 +5,5 @@ pub enum SolayerMayanRedeemerError {
     #[msg("custom payload is not match with the expected")]
     InvalidCustomPayload,
     MintAndTokenProgramMismatch,
+    UserMustSignToWithdrawDepositMint,
 }

@@ -2,21 +2,27 @@ use anchor_lang::prelude::*;
 use anchor_spl::token_interface;
 
 use crate::{
-    state::{Ledger},
+    state::{LedgerSeeds},
     error::SolayerMayanRedeemerError,
+    LEDGER_SEED_PREFIX
 };
 
+
+
 #[derive(Accounts)]
+#[instruction(ledger_seeds: LedgerSeeds, try_close_ata: bool)]
 pub struct CompleteDeposit<'info> {
+    /// CHECK: empty PDA
     #[account(
-        mut,
         seeds = [
-            Ledger::SEED_PREFIX,
-            &ledger.cctp_message_hash,
+            LEDGER_SEED_PREFIX,
+            &ledger_seeds.user.to_bytes(),
+            &ledger_seeds.mint_deposit.to_bytes(),
+            &ledger_seeds.susd_mint.to_bytes(),
         ],
-        bump = ledger.bump,
+        bump,
     )]
-    ledger: Box<Account<'info, Ledger>>,
+    ledger: UncheckedAccount<'info>,
 
     #[account(
         mut,
@@ -37,13 +43,19 @@ pub struct CompleteDeposit<'info> {
     )]
     mint: InterfaceAccount<'info, token_interface::Mint>,
 
+    /// CHECK: this check by ledger seeds
+    #[account(
+        address = ledger_seeds.user,
+    )]
+    user: UncheckedAccount<'info>,
     #[account(
         mut,
         associated_token::mint = mint,
-        associated_token::authority = ledger.user,
+        associated_token::authority = ledger_seeds.user,
         associated_token::token_program = token_program,
     )]
     user_acc: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
+
 
     relayer: Signer<'info>,
 
@@ -52,15 +64,22 @@ pub struct CompleteDeposit<'info> {
 
 pub fn handle_complete_deposit<'info>(
     ctx: Context<CompleteDeposit<'info>>,
+    ledger_seeds: LedgerSeeds,
     try_close_ata: bool,
 ) -> Result<()> {
     let ledger = &ctx.accounts.ledger;
     let ledger_acc = &mut ctx.accounts.ledger_acc;
 
+    if ctx.accounts.mint.key() == ledger_seeds.mint_deposit {
+        require!(ctx.accounts.user.is_signer, SolayerMayanRedeemerError::UserMustSignToWithdrawDepositMint);
+    }
+
     let ledger_signer_seeds = &[
-        Ledger::SEED_PREFIX,
-        &ledger.cctp_message_hash,
-        &[ledger.bump],
+        LEDGER_SEED_PREFIX,
+        &ledger_seeds.user.to_bytes(),
+        &ledger_seeds.mint_deposit.to_bytes(),
+        &ledger_seeds.susd_mint.to_bytes(),
+        &[ctx.bumps.ledger],
     ];
 
     token_interface::transfer_checked(
