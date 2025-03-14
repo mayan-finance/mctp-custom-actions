@@ -7,10 +7,4 @@ describe("solayer-mayan-redeemer", () => {
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.SolayerMayanRedeemer as Program<SolayerMayanRedeemer>;
-
-  it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await program.methods.initialize().rpc();
-    console.log("Your transaction signature", tx);
-  });
 });
