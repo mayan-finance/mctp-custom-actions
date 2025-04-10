@@ -5,6 +5,7 @@ resolution = false
 skip-lint = false
 
 [programs.localnet]
+example-mayan-redeemer = "64GF47az6wbopzshLNaeQe57LYkHyAU95ihozWQ5zrFg"
 mctp-payload-writer = "DwMLtdtJqJQkHzNcrdTBuWHJByJfgpKBnvFvzyKdy3cU"
 solayer_mayan_redeemer = "GZTtM9WWN1kJuXHJBNRVLjc76dSPG44ExfyieLQjR8sW"
 
@@ -12,7 +13,7 @@ solayer_mayan_redeemer = "GZTtM9WWN1kJuXHJBNRVLjc76dSPG44ExfyieLQjR8sW"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

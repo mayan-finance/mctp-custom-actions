@@ -1,14 +1,9 @@
 require('dotenv').config();
 import * as anchor from "@coral-xyz/anchor";
 import bs58 from "bs58";
-// import {
-//     Connection,
-//     Keypair, PublicKey,
-//     SystemProgram, SYSVAR_RENT_PUBKEY, SYSVAR_CLOCK_PUBKEY,
-//     Transaction,
-//     TransactionInstruction,
-//     VersionedTransaction, MessageV0
-// } from "@solana/web3.js";
+import {
+    SystemProgram
+} from "@solana/web3.js";
 
 const keypair = anchor.web3.Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_PRIVATE_KEY as string));
 export const connection = new anchor.web3.Connection(process.env.SOLANA_RPC as string, 'confirmed');
@@ -113,3 +108,19 @@ export const chains: { [index in ChainName]: number }  = {
     sui: 21,
     unichain: 44,
 };
+
+type Erc20Permit = {
+    value: bigint,
+    deadline: number,
+    v: number,
+    r: string,
+    s: string,
+}
+
+export const ZeroPermit: Erc20Permit = {
+    value: BigInt(0),
+    deadline: 0,
+    v: 0,
+    r: `0x${SystemProgram.programId.toBuffer().toString('hex')}`,
+    s: `0x${SystemProgram.programId.toBuffer().toString('hex')}`,
+}
