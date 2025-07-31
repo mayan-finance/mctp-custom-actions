@@ -5,6 +5,7 @@ resolution = false
 skip-lint = false
 
 [programs.localnet]
+cpi-proxy = "6u55Hqo1AsGMuJQ31VgNBfVhnpeszxXC4b6KzFaRU2JM"
 example-mayan-redeemer = "64GF47az6wbopzshLNaeQe57LYkHyAU95ihozWQ5zrFg"
 mctp-payload-writer = "DwMLtdtJqJQkHzNcrdTBuWHJByJfgpKBnvFvzyKdy3cU"
 solayer_mayan_redeemer = "GZTtM9WWN1kJuXHJBNRVLjc76dSPG44ExfyieLQjR8sW"
